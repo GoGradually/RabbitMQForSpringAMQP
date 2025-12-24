@@ -1,6 +1,8 @@
 package me.rabbitmqserver1.tut3;
 
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -8,9 +10,22 @@ import org.springframework.context.annotation.Profile;
 @Profile({"tut3", "pub-sub"})
 @Configuration
 public class Tut3Config {
+
+
+    @Bean
+    public MessageConverter jacksonMessageConverter() {
+        return new JacksonJsonMessageConverter();
+    }
+
+
     @Bean
     public FanoutExchange fanout(){
         return new FanoutExchange("tut3.fanout");
+    }
+
+    @Bean
+    public DirectExchange direct(){
+        return new DirectExchange("tut3.direct");
     }
 
     @Profile("receiver")
@@ -26,8 +41,8 @@ public class Tut3Config {
         }
 
         @Bean
-        public Binding binding1(FanoutExchange fanout, Queue autoDeleteQueue1){
-            return BindingBuilder.bind(autoDeleteQueue1).to(fanout);
+        public Binding binding1(DirectExchange direct, Queue autoDeleteQueue1){
+            return BindingBuilder.bind(autoDeleteQueue1).to(direct).with("Orange");
         }
 
         @Bean

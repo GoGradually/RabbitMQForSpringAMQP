@@ -6,13 +6,13 @@ import org.springframework.util.StopWatch;
 public class Tut3Receiver {
 
     @RabbitListener(queues = "#{autoDeleteQueue1.name}")
-    public void receive1(String in) throws InterruptedException {
-        receive(in, 1);
+    public void receive1(ScheduleTimeUpcomingUpdatedMessage in) throws InterruptedException {
+        System.out.println(in.toString());
     }
 
     @RabbitListener(queues = "#{autoDeleteQueue2.name}")
-    public void receive2(String in) throws InterruptedException {
-        receive(in, 2);
+    public void receive2(ScheduleTimeUpcomingUpdatedMessage in) throws InterruptedException {
+        System.out.println(in.toString());
     }
 
     public void receive(String in, int receiver) throws InterruptedException {

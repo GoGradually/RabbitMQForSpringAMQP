@@ -5,6 +5,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Tut3Sender {
@@ -18,18 +20,9 @@ public class Tut3Sender {
     AtomicInteger count = new AtomicInteger(0);
 
     @Scheduled(fixedDelay = 1000, initialDelay = 500)
-    public void send(){
-        StringBuilder builder = new StringBuilder("Hello");
-        if (dots.getAndIncrement() == 3){
-            dots.set(1);
-        }
-        for (int i = 0; i <= dots.get(); i++) {
-            builder.append('.');
-        }
-
-        builder.append(count.incrementAndGet());
-        String message = builder.toString();
-        rabbitTemplate.convertAndSend(fanout.getName(), "", message);
+    public void send() {
+        ScheduleTimeUpcomingUpdatedMessage message = new ScheduleTimeUpcomingUpdatedMessage(1L, 1L, OffsetDateTime.of(2024, 6, 30, 12, 0, 0, 0, ZoneOffset.of("+09:00")), OffsetDateTime.of(2024, 6, 30, 12, 0, 0, 0, ZoneOffset.of("+09:00")), "1");
+        rabbitTemplate.convertAndSend(fanout.getName(), "Orange", message);
         System.out.println(" [x] Sent '" + message + "'");
     }
 }
